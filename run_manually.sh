@@ -11,8 +11,8 @@ echo
 set -x
 
 BASE_IMAGE="dellelce/py-base" \
-TARGET_IMAGE="dellelce/airflow-base" \
-PREFIX="/app/airflow" \
+TARGET_IMAGE="dellelce/tf-base" \
+PREFIX="/app/tf" \
 ./main.sh > ${log} &
 
 ## EOF ##

@@ -26,7 +26,7 @@
  image="${1:-${TARGET_IMAGE}}"; shift
 
  prefix="${1:-${PREFIX}}"; shift
- prefix="${prefix:-/app/airflow}" # sanity check
+ prefix="${prefix:-/app/tf}" # sanity check
 
 ### MAIN ###
 

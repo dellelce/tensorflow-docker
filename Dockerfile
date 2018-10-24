@@ -2,8 +2,8 @@ ARG BASE=dellelce/py-base
 FROM $BASE as build
 
 LABEL maintainer="Antonio Dell'Elce"
-ARG USERNAME=tensorflow
-ARG AIRENV=/home/${USERNAME}/air-env
+ARG USERNAME=tf
+ARG TFENV=/home/${USERNAME}/tf-env
 ARG GID=2001
 ARG UID=2000
 
@@ -11,14 +11,14 @@ ARG UID=2000
 RUN apk add --no-cache gcc g++ binutils gfortran make libc-dev linux-headers \
                        libxslt-dev
 
-WORKDIR $AIRENV
+WORKDIR $TFENV
 COPY requirements.txt  /tmp/requirements.txt
 
 # install requirements
-RUN cd "${AIRENV}" && "${INSTALLDIR}/bin/python3" -m venv . \
- && . ${AIRENV}/bin/activate \
+RUN cd "${TFENV}" && "${INSTALLDIR}/bin/python3" -m venv . \
+ && . ${TFENV}/bin/activate \
  && pip install -U pip setuptools \
- && SLUGIFY_USES_TEXT_UNIDECODE=yes pip install -r /tmp/requirements.txt \
+ && pip install -r /tmp/requirements.txt \
  && chown -R ${UID}:${GID} /app
 
 ARG BASE=dellelce/py-base
@@ -31,30 +31,30 @@ ARG GROUP=tf
 ARG USERNAME=tf
 ARG BASEDATA=/app/data
 ARG DATA=${BASEDATA}/${USERNAME}
-ARG AIRPORT=8000
-ARG AIRHOME=/home/${USERNAME}
-ARG AIRENV=/home/${USERNAME}/air-env
+ARG TFPORT=8000
+ARG TFHOME=/home/${USERNAME}
+ARG TFENV=/home/${USERNAME}/tf-env
 
-ENV ENV   $AIRHOME/.profile
+ENV ENV   $TFHOME/.profile
 
 # copy virtualenv from first stage
-COPY --from=build ${AIRENV} ${AIRENV} 
+COPY --from=build ${TFENV} ${TFENV} 
 
 RUN mkdir -p ${BASEDATA} && chmod 777 ${BASEDATA} \
     && addgroup -g "${GID}" "${GROUP}" && adduser -D -s /bin/sh \
-       -g "AirFlow user" \
+       -g "TensorFlow user" \
        -G "${GROUP}" -u "${UID}" \
        "${USERNAME}"
 
-RUN    mkdir -p "${AIRENV}" && chown "${USERNAME}":"${GROUP}" "${AIRENV}" \
-    && chown -R "${USERNAME}:${GROUP}" "${AIRHOME}" \
+RUN    mkdir -p "${TFENV}" && chown "${USERNAME}":"${GROUP}" "${TFENV}" \
+    && chown -R "${USERNAME}:${GROUP}" "${TFHOME}" \
     && mkdir -p "${DATA}" && chown "${USERNAME}":"${GROUP}" "${DATA}" \
-    && echo '. '${AIRENV}'/bin/activate'           >> ${AIRHOME}/.profile
+    && echo '. '${TFENV}'/bin/activate'           >> ${TFHOME}/.profile
 
 USER ${USERNAME}
 
 VOLUME ${DATA}
-ENV AIRDATA  ${DATA}
+ENV TFDATA  ${DATA}
 
-EXPOSE ${AIRPORT}:${AIRPORT}
+EXPOSE ${TFPORT}:${TFPORT}
 
