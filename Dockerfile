@@ -2,7 +2,7 @@ ARG BASE=dellelce/py-base
 FROM $BASE as build
 
 LABEL maintainer="Antonio Dell'Elce"
-ARG USERNAME=airflow
+ARG USERNAME=tensorflow
 ARG AIRENV=/home/${USERNAME}/air-env
 ARG GID=2001
 ARG UID=2000
@@ -14,7 +14,7 @@ RUN apk add --no-cache gcc g++ binutils gfortran make libc-dev linux-headers \
 WORKDIR $AIRENV
 COPY requirements.txt  /tmp/requirements.txt
 
-# install airflow and requirements
+# install requirements
 RUN cd "${AIRENV}" && "${INSTALLDIR}/bin/python3" -m venv . \
  && . ${AIRENV}/bin/activate \
  && pip install -U pip setuptools \
@@ -27,8 +27,8 @@ FROM $BASE as finale
 # commands are intended for busybox: if BASE is changed to non-BusyBox these may fail!
 ARG GID=2001
 ARG UID=2000
-ARG GROUP=airflow
-ARG USERNAME=airflow
+ARG GROUP=tf
+ARG USERNAME=tf
 ARG BASEDATA=/app/data
 ARG DATA=${BASEDATA}/${USERNAME}
 ARG AIRPORT=8000
