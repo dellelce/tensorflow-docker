@@ -1,3 +1,1 @@
-tenacity>=5.0.0
-cryptography
-https://github.com/ucontent/incubator-airflow/archive/1.10.0-py37.tar.gz
+tensorflow
